@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spendo/screen/color&theme.dart';
-import 'package:spendo/screen/common_component/ListCard.dart';
 import 'package:spendo/screen/common_component/dashboard.dart';
+import 'package:spendo/screen/common_component/history_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -52,7 +52,10 @@ class _HomePageState extends State<HomePage> {
                   icon: Icon(Icons.dashboard, size: width * 0.06),
                   text: 'Dashboard',
                 ),
-                Tab(icon: Icon(Icons.list, size: width * 0.06), text: 'List'),
+                Tab(
+                  icon: Icon(Icons.list, size: width * 0.06),
+                  text: 'History',
+                ),
 
                 Tab(
                   icon: Icon(Icons.pie_chart, size: width * 0.06),
@@ -90,7 +93,12 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: TabBarView(
-          children: [Dashboard(), ListCard1(), Text('Stats'), Text('Settings')],
+          children: [
+            Dashboard(),
+            HistoryPage(),
+            Text('Stats'),
+            Text('Settings'),
+          ],
         ),
       ),
     );
