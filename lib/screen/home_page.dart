@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spendo/core/bloc/bloc/user_bloc.dart';
+import 'package:spendo/core/repository/firebase.dart';
 import 'package:spendo/screen/color&theme.dart';
-import 'package:spendo/screen/common_component/analytic_page.dart';
-import 'package:spendo/screen/common_component/dashboard.dart';
-import 'package:spendo/screen/common_component/history_page.dart';
-import 'package:spendo/screen/common_component/plan_page.dart';
+import 'package:spendo/screen/common_component/buttons.dart';
+import 'package:spendo/screen/common_component/tab%20view/analytic_page.dart';
+import 'package:spendo/screen/common_component/tab%20view/dashboard.dart';
+import 'package:spendo/screen/common_component/tab%20view/history_page.dart';
+import 'package:spendo/screen/common_component/tab%20view/plan_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,6 +17,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  FirebaseRepository firebase = FirebaseRepository();
+
+  @override
+  void initState() {
+    context.read<UserBloc>().add(LoadUsers(userId: '1155555'));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -30,13 +42,60 @@ class _HomePageState extends State<HomePage> {
                 radius: 16,
               ),
               const SizedBox(width: 8),
-              const Text(
-                'Hello User!',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.color1,
-                ),
+              BlocBuilder<UserBloc, UserState>(
+                builder: (context, state) {
+                  if (state is UserLoaded) {
+                    return Text(
+                      'Hello, ${state.user.name}!',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.color1,
+                      ),
+                    );
+                  } else if (state is UserLoading) {
+                    return const CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.color1,
+                    );
+                  } else if (state is UserError) {
+                    return Text(
+                      'Error: ${state.message}',
+                      style: const TextStyle(color: Colors.red),
+                    );
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
+              Mybutton1(
+                label: "Test",
+                onPressed: () async {
+                  // var user = BlocProvider.of<UserBloc>(context);
+                  // user.add(
+                  //   AddUser(
+                  //     userId: '1155555',
+                  //     email: 'dhananjaya@example.com',
+                  //     name: 'Dhananjaya',
+                  //   ),
+                  // );
+                  // print(
+                  //   user is UserLoaded ? user.users.name : 'No user loaded',
+                  // );
+
+                  // firebase.addUser(
+                  //   AppUser(
+                  //     id: '11',
+                  //     name: 'Dhananjaya',
+                  //     email: 'dhananjaya@example.com',
+                  //     monthlyBudget: 1000,
+                  //     monthlyExpectedIncome: 1200,
+                  //     monthlyExpectedOutcome: 800,
+                  //     categories: [],
+                  //     transactions: [],
+                  //     isEnable: true,
+                  //   ),
+                  // );
+                },
               ),
             ],
           ),

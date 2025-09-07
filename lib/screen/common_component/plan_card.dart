@@ -39,7 +39,7 @@ class PlanCard extends StatelessWidget {
             color: AppColors.color1,
             amountFontSize: 24,
           ),
-          Mybutton1(label: "Change"),
+          Mybutton1(label: "Change", onPressed: () {}),
         ],
       ),
     );

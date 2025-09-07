@@ -18,9 +18,11 @@ class _MainNavigatorState extends State<MainNavigator> {
             builder: (context) {
               switch (settings.name) {
                 case '/':
-                  return const HomePage();
-                case '/home':
                   return const LoggingPage();
+                case '/logging':
+                  return const LoggingPage();
+                case '/home':
+                  return const HomePage();
                 default:
                   return const LoggingPage();
               }

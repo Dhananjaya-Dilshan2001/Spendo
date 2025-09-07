@@ -116,7 +116,7 @@ class PlanPage extends StatelessWidget {
                   color: AppColors.color1,
                 ),
               ),
-              Mybutton1(label: 'Add New'),
+              Mybutton1(label: 'Add New', onPressed: () {}),
             ],
           ),
           SizedBox(height: height * 0.02),
