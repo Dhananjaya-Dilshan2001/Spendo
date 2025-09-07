@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:spendo/core/bloc/bloc/user_bloc.dart';
+import 'package:spendo/core/model/transaction.dart';
+import 'package:spendo/core/repository/firebase.dart';
 import 'package:spendo/screen/color&theme.dart';
 import 'package:spendo/screen/common_component/ListCard.dart';
+import 'package:spendo/screen/common_component/buttons.dart';
 import 'package:spendo/screen/common_component/component.dart';
+import 'package:spendo/screen/common_component/popUpDialog.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -14,6 +18,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  FirebaseRepository firebase = FirebaseRepository();
   @override
   void initState() {
     context.read<UserBloc>().add(LoadUsers(userId: '1155555'));
@@ -33,19 +38,17 @@ class _DashboardState extends State<Dashboard> {
         } else if (state is UserError) {
           return Center(child: Text('Error: ${state.message}'));
         } else if (state is UserLoaded) {
+          double totalIncome = 0;
+          double totalExpense = 0;
+          for (var transaction in state.user.transactions!) {
+            if (transaction.isExpense) {
+              totalExpense += transaction.amount;
+            } else {
+              totalIncome += transaction.amount;
+            }
+          }
           return Stack(
             children: [
-              Positioned(
-                right: width * 0.05,
-                bottom: height * 0.02,
-                child: IconButton(
-                  onPressed: () {},
-                  icon: CircleAvatar(
-                    backgroundColor: AppColors.color1,
-                    child: Icon(Icons.add, color: AppColors.color5),
-                  ),
-                ),
-              ),
               Column(
                 children: [
                   SizedBox(height: height * 0.01),
@@ -92,7 +95,7 @@ class _DashboardState extends State<Dashboard> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Income : 10,000/=',
+                                    'Income : Rs ${totalIncome.toStringAsFixed(2)}/=',
                                     style: TextStyle(
                                       fontSize: width * 0.03,
                                       color: AppColors.color5,
@@ -100,7 +103,7 @@ class _DashboardState extends State<Dashboard> {
                                     ),
                                   ),
                                   Text(
-                                    'Out come : 10,000/=',
+                                    'Outcome : Rs ${totalExpense.toStringAsFixed(2)}/=',
                                     style: TextStyle(
                                       fontSize: width * 0.03,
                                       fontWeight: FontWeight.bold,
@@ -128,7 +131,7 @@ class _DashboardState extends State<Dashboard> {
                   Container(
                     width: width * 0.85,
                     child: Text(
-                      'Today : 2025 March 10',
+                      'Today : ${DateFormat('yyyy-MM-dd').format(DateTime.now())}',
                       style: TextStyle(
                         fontSize: width * 0.03,
                         fontWeight: FontWeight.bold,
@@ -142,11 +145,61 @@ class _DashboardState extends State<Dashboard> {
                       width: width * 0.9,
                       //color:AppColors.color2, // Set the background color of the container
                       child: ListView(
-                        children: [...List.generate(5, (index) => ListCard1())],
+                        children: [
+                          ...List.generate(
+                            state.user.transactions!.length,
+                            (index) => ListCard1(
+                              onLongPress: () async {
+                                var confirmDelete = await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertMessage();
+                                  },
+                                );
+                                confirmDelete.then((shouldDelete) {
+                                  if (shouldDelete == true) {
+                                    firebase.deleteTransaction(
+                                      state.user,
+                                      state.user.transactions![index].id,
+                                    );
+                                    setState(() {});
+                                  }
+                                });
+                              },
+                              transaction: state.user.transactions![index],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ],
+              ),
+              Positioned(
+                right: width * 0.05,
+                bottom: height * 0.02,
+                child: Mybutton1(
+                  label: "Add",
+                  onPressed: () {
+                    var transaction = showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return popDialog(user: state.user);
+                      },
+                    );
+                    transaction.then((newTransaction) {
+                      if (newTransaction != null &&
+                          newTransaction is UserTransaction) {
+                        print("New Transaction: ${newTransaction.toJson()}");
+                        firebase.addTransaction(state.user, newTransaction);
+                        setState(() {});
+                      }
+                    });
+
+                    //addTransictionController(state);
+                    setState(() {});
+                  },
+                ),
               ),
             ],
           );

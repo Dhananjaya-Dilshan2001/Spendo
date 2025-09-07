@@ -7,6 +7,7 @@ class UserTransaction {
   String description;
   double amount;
   Timestamp date;
+  String id;
 
   UserTransaction({
     required this.month,
@@ -15,6 +16,7 @@ class UserTransaction {
     required this.description,
     required this.amount,
     required this.date,
+    required this.id,
   });
   // Method to convert a Transaction object to a map
   Map<String, dynamic> toMap() {
@@ -25,6 +27,7 @@ class UserTransaction {
       'description': description,
       'amount': amount,
       'date': date,
+      'id': id,
     };
   }
 
@@ -36,6 +39,7 @@ class UserTransaction {
       'description': description,
       'amount': amount,
       'date': date,
+      'id': id,
     };
   }
 
@@ -48,6 +52,7 @@ class UserTransaction {
       description: map['description'],
       amount: map['amount'],
       date: map['date'],
+      id: map['id'],
     );
   }
   factory UserTransaction.fromJson(Map<String, dynamic> json) {
@@ -58,6 +63,7 @@ class UserTransaction {
       description: json['description'],
       amount: json['amount'],
       date: json['date'],
+      id: json['id'],
     );
   }
 }

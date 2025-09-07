@@ -50,38 +50,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             .catchError((error) {
               emit(UserError(message: error.toString()));
             });
-      } else if (event is UpdateUser) {
-        emit(UserLoading());
-        firebaseRepository
-            .getUserByID(event.userId)
-            .then((existingUser) {
-              if (existingUser != null) {
-                AppUser updatedUser = AppUser(
-                  id: existingUser.id,
-                  name: event.name,
-                  email: event.email,
-                  monthlyBudget: existingUser.monthlyBudget,
-                  monthlyExpectedIncome: existingUser.monthlyExpectedIncome,
-                  monthlyExpectedOutcome: existingUser.monthlyExpectedOutcome,
-                  categories: existingUser.categories,
-                  transactions: existingUser.transactions,
-                  isEnable: existingUser.isEnable,
-                );
-                firebaseRepository
-                    .updateUser(updatedUser)
-                    .then((_) {
-                      emit(UserUpdated(message: 'User updated successfully'));
-                    })
-                    .catchError((error) {
-                      emit(UserError(message: error.toString()));
-                    });
-              } else {
-                emit(UserError(message: 'User not found'));
-              }
-            })
-            .catchError((error) {
-              emit(UserError(message: error.toString()));
-            });
       } else if (event is DeleteUser) {
         emit(UserLoading());
         firebaseRepository

@@ -1,4 +1,3 @@
-import 'package:spendo/core/model/categories.dart';
 import 'package:spendo/core/model/transaction.dart';
 
 class AppUser {
@@ -8,7 +7,7 @@ class AppUser {
   double? monthlyBudget;
   double? monthlyExpectedIncome;
   double? monthlyExpectedOutcome;
-  List<Categories>? categories;
+  List<String>? categories;
   List<UserTransaction>? transactions;
   bool isEnable;
   AppUser({
@@ -31,7 +30,7 @@ class AppUser {
       'monthlyBudget': monthlyBudget,
       'monthlyExpectedIncome': monthlyExpectedIncome,
       'monthlyExpectedOutcome': monthlyExpectedOutcome,
-      'categories': categories?.map((category) => category.toMap()).toList(),
+      'categories': categories?.map((category) => category).toList(),
       'transactions':
           transactions?.map((transaction) => transaction.toMap()).toList(),
       'isEnable': isEnable,
@@ -46,7 +45,7 @@ class AppUser {
       'monthlyBudget': monthlyBudget,
       'monthlyExpectedIncome': monthlyExpectedIncome,
       'monthlyExpectedOutcome': monthlyExpectedOutcome,
-      'categories': categories?.map((category) => category.toJson()).toList(),
+      'categories': categories?.map((category) => category).toList(),
       'transactions':
           transactions?.map((transaction) => transaction.toJson()).toList(),
       'isEnable': isEnable,
@@ -64,7 +63,7 @@ class AppUser {
       monthlyExpectedOutcome: map['monthlyExpectedOutcome'],
       categories:
           (map['categories'] as List<dynamic>?)
-              ?.map((category) => Categories.fromMap(category))
+              ?.map((category) => category.toString())
               .toList(),
       transactions:
           (map['transactions'] as List<dynamic>?)
@@ -83,7 +82,7 @@ class AppUser {
       monthlyExpectedOutcome: json['monthlyExpectedOutcome'],
       categories:
           (json['categories'] as List<dynamic>?)
-              ?.map((category) => Categories.fromJson(category))
+              ?.map((category) => category.toString())
               .toList(),
       transactions:
           (json['transactions'] as List<dynamic>?)

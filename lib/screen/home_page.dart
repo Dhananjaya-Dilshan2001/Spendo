@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spendo/core/bloc/bloc/user_bloc.dart';
 import 'package:spendo/core/repository/firebase.dart';
 import 'package:spendo/screen/color&theme.dart';
-import 'package:spendo/screen/common_component/buttons.dart';
 import 'package:spendo/screen/common_component/tab%20view/analytic_page.dart';
 import 'package:spendo/screen/common_component/tab%20view/dashboard.dart';
 import 'package:spendo/screen/common_component/tab%20view/history_page.dart';
@@ -65,36 +64,6 @@ class _HomePageState extends State<HomePage> {
                     );
                   }
                   return const CircularProgressIndicator();
-                },
-              ),
-              Mybutton1(
-                label: "Test",
-                onPressed: () async {
-                  // var user = BlocProvider.of<UserBloc>(context);
-                  // user.add(
-                  //   AddUser(
-                  //     userId: '1155555',
-                  //     email: 'dhananjaya@example.com',
-                  //     name: 'Dhananjaya',
-                  //   ),
-                  // );
-                  // print(
-                  //   user is UserLoaded ? user.users.name : 'No user loaded',
-                  // );
-
-                  // firebase.addUser(
-                  //   AppUser(
-                  //     id: '11',
-                  //     name: 'Dhananjaya',
-                  //     email: 'dhananjaya@example.com',
-                  //     monthlyBudget: 1000,
-                  //     monthlyExpectedIncome: 1200,
-                  //     monthlyExpectedOutcome: 800,
-                  //     categories: [],
-                  //     transactions: [],
-                  //     isEnable: true,
-                  //   ),
-                  // );
                 },
               ),
             ],
