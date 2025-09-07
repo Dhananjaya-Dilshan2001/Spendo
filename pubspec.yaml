@@ -37,6 +37,8 @@ dependencies:
   firebase_core: ^4.1.0
   firebase_ui_auth: ^3.0.0
   firebase_auth: ^6.0.2
+  basic_dropdown_button: ^1.1.1+1
+  fl_chart: ^0.66.2
 
 dev_dependencies:
   flutter_test:

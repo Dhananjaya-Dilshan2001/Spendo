@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:spendo/screen/color&theme.dart';
-import 'package:spendo/screen/common_component/ListCard.dart';
 import 'package:spendo/screen/common_component/component.dart';
 
 class HistoryPage extends StatelessWidget {
@@ -105,15 +104,60 @@ class HistoryPage extends StatelessWidget {
               ],
             ),
           ),
-
-          SizedBox(height: height * 0.02),
-          Expanded(
-            child: Container(
-              width: width * 0.9,
-              //color:AppColors.color2, // Set the background color of the container
-              child: ListView(
-                children: [...List.generate(5, (index) => ListCard1())],
+          SizedBox(height: height * 0.01),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              MyDropdownButton(items: ['All', 'Income', 'Expense']),
+              MyDropdownButton(
+                items: ["Category", "Food", "Shopping", "Bills"],
               ),
+            ],
+          ),
+          Container(
+            height: height * 0.45,
+            child: ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.all(width * 0.04),
+              children: List.generate(10, (index) {
+                return ListTile(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: BorderSide(color: AppColors.color5, width: 2),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: width * 0.05,
+                    vertical: height * 0.005,
+                  ),
+                  leading: CircleAvatar(
+                    backgroundColor: AppColors.color1,
+                    child: Icon(Icons.shopping_cart, color: Colors.white),
+                  ),
+                  title: Text(
+                    'Shopping',
+                    style: TextStyle(
+                      fontSize: width * 0.04,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.color1,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'March 10, 2025',
+                    style: TextStyle(
+                      fontSize: width * 0.03,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  trailing: Text(
+                    '- Rs 2,000',
+                    style: TextStyle(
+                      fontSize: width * 0.04,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.color2,
+                    ),
+                  ),
+                );
+              }),
             ),
           ),
         ],
