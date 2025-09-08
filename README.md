@@ -1,16 +1,58 @@
 # spendo
 
-A new Flutter project.
+This is the Application That can basically manage and track the user monthly spending behavior, It give the good overview idea about the 
+user monthly spending behavior using graphs and user friendly interface. 
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## 🚀 Features  
 
-A few resources to get you started if this is your first Flutter project:
+- **User Authentication**  
+  - Login & Registration system using **Firebase Authentication**.  
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **Dashboard**  
+  - Overview of total income, expenses, and remaining budget.  
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **Add Transactions**  
+  - Add income/expense transactions with amount, category, date, and description.  
+- **Transaction History**  
+  - View all transactions with filters by **date** and **category**.  
+  - Display using **ListView** for better user experience.  
+
+- **Budget Planning**  
+  - Set **monthly budget goals**.  
+  - Track progress with **progress indicators/graphs**.  
+
+- **Reports & Insights**  
+  - Visual analytics of monthly spending by category.  
+  - Integrated **charts & graphs** using Flutter packages.  
+
+
+## 🛠️ Tech Stack  
+
+- **Framework:** Flutter (Dart)  
+- **State Management:** Provider / Riverpod  
+- **Database:** Firebase Firestore  
+- **Authentication:** Firebase Auth  
+- **UI:** Responsive, accessible, and optimized for Android & iOS  
+- **Charts & Graphs:** Flutter charting packages
+
+
+## 📂 Project Structure  
+lib/
+ ├── main.dart               # Entry point
+ ├── firebase_options.dart  # firebase initiale Ids etc
+ ├── core/                  # Bakend part
+ |       --bloc             # BloC to manage user state and event
+ |       --model            # Data models (User, Transaction)
+ |       --repository       # layer for communicate with app and firebase
+ ├── screen/                # frontedn part
+ |       --common_component
+ |       --..
+
+## 🎯 Learning Outcomes  
+
+- Deepened knowledge of **Flutter & Dart**.  
+- Hands-on experience with **Firebase Authentication & Firestore**.  
+- Implemented **responsive UI** for mobile platforms.  
+- Practical understanding of **state management using BloC & Provider**.
+ 
