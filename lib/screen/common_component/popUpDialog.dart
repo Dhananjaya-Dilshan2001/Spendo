@@ -23,6 +23,28 @@ class popDialog extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          Row(
+            children: [
+              Text("Date: "),
+              Text(
+                "${newTransaction.date.toDate().day}-${newTransaction.date.toDate().month}-${newTransaction.date.toDate().year}",
+              ),
+              IconButton(
+                icon: Icon(Icons.calendar_today),
+                onPressed: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: newTransaction.date.toDate(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2101),
+                  );
+                  if (pickedDate != null) {
+                    newTransaction.date = Timestamp.fromDate(pickedDate);
+                  }
+                },
+              ),
+            ],
+          ),
           DropdownButtonFormField<String>(
             items: [
               DropdownMenuItem(value: "Income", child: Text("Income")),
@@ -81,13 +103,15 @@ class popDialog extends StatelessWidget {
 }
 
 class AlertMessage extends StatelessWidget {
-  const AlertMessage({super.key});
+  final String title;
+  final String content;
+  const AlertMessage({super.key, required this.title, required this.content});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Confirm Delete'),
-      content: Text('Are you sure you want to delete this transaction?'),
+      title: Text(title),
+      content: Text(content),
       actions: [
         TextButton(
           onPressed: () {
@@ -100,6 +124,40 @@ class AlertMessage extends StatelessWidget {
             Navigator.of(context).pop(true);
           },
           child: Text('Delete'),
+        ),
+      ],
+    );
+  }
+}
+
+class SimpleUserInput extends StatelessWidget {
+  final String title;
+  final String hintText;
+  final String variableName;
+  const SimpleUserInput({
+    super.key,
+    required this.title,
+    required this.hintText,
+    required this.variableName,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    String newCategory = '';
+    return AlertDialog(
+      title: Text(title),
+      content: TextField(
+        onChanged: (value) {
+          newCategory = value;
+        },
+        decoration: InputDecoration(hintText: hintText),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(newCategory);
+          },
+          child: Text('Add'),
         ),
       ],
     );

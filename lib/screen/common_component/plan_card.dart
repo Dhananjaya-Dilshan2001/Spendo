@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:spendo/screen/color&theme.dart';
 import 'package:spendo/screen/common_component/buttons.dart';
 import 'package:spendo/screen/common_component/component.dart';
 
 class PlanCard extends StatelessWidget {
   final Color color;
-  const PlanCard({super.key, required this.color});
+  final String title;
+  final String amount;
+  final VoidCallback? onPressed;
+  const PlanCard({
+    super.key,
+    required this.color,
+    required this.title,
+    required this.amount,
+    this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,17 +37,18 @@ class PlanCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           MyWidget1(
-            title: 'Monthly Budget',
-            amount: '3000/=',
-            color: AppColors.color1,
+            title: title,
+            amount: amount,
+            color: color,
             amountFontSize: 24,
           ),
-          MyWidget2(
-            title: 'Same for Next Month',
-            color: AppColors.color1,
-            amountFontSize: 24,
+
+          Mybutton1(
+            label: "Change",
+            onPressed: () {
+              onPressed?.call();
+            },
           ),
-          Mybutton1(label: "Change", onPressed: () {}),
         ],
       ),
     );

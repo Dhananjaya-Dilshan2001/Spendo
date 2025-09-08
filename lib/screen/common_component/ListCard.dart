@@ -20,6 +20,7 @@ class _ListCard1State extends State<ListCard1> {
       onLongPress: () {
         widget.onLongPress?.call();
       },
+
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
         side: BorderSide(color: AppColors.color5, width: 2),
@@ -31,7 +32,7 @@ class _ListCard1State extends State<ListCard1> {
       leading: CircleAvatar(
         backgroundColor: AppColors.color1,
         child: Icon(
-          widget.transaction.isExpense ? Icons.remove : Icons.add,
+          widget.transaction.isExpense ? Icons.call_made : Icons.call_received,
           color: Colors.white,
         ),
       ),
@@ -52,7 +53,10 @@ class _ListCard1State extends State<ListCard1> {
         style: TextStyle(
           fontSize: width * 0.04,
           fontWeight: FontWeight.bold,
-          color: AppColors.color2,
+          color:
+              widget.transaction.isExpense
+                  ? AppColors.color2
+                  : AppColors.color3,
         ),
       ),
     );

@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
+import 'package:spendo/core/model/transaction.dart';
 import 'package:spendo/core/model/user.dart';
 import 'package:spendo/core/repository/firebase.dart';
 

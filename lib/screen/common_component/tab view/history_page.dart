@@ -57,6 +57,13 @@ class _HistoryPageState extends State<HistoryPage> {
             selectedDate,
           );
           displayTransactions.sort((a, b) => b.date.compareTo(a.date));
+          double totalIncome = displayTransactions
+              .where((tx) => !tx.isExpense)
+              .fold(0, (sum, tx) => sum + tx.amount);
+          double totalExpense = displayTransactions
+              .where((tx) => tx.isExpense)
+              .fold(0, (sum, tx) => sum + tx.amount);
+          double balance = totalIncome - totalExpense;
           return Container(
             child: Column(
               children: [
@@ -93,7 +100,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     children: [
                       MyWidget1(
                         title: "Budget",
-                        amount: "Rs 5,000",
+                        amount: "Rs $balance",
                         color: AppColors.color1,
                         amountFontSize: width * 0.05,
                       ),
@@ -102,13 +109,13 @@ class _HistoryPageState extends State<HistoryPage> {
                         children: [
                           MyWidget1(
                             title: "Total Income",
-                            amount: "Rs 10,000",
+                            amount: "Rs $totalIncome",
                             color: AppColors.color3,
                             amountFontSize: width * 0.03,
                           ),
                           MyWidget1(
                             title: "Total Outcome",
-                            amount: "Rs 10,000",
+                            amount: "Rs $totalExpense",
                             color: AppColors.color2,
                             amountFontSize: width * 0.03,
                           ),
@@ -171,7 +178,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   children: [
                     MyDropdownButton(items: ['All', 'Income', 'Expense']),
                     MyDropdownButton(
-                      items: ["Category", "Food", "Shopping", "Bills"],
+                      items: ["Category", ...state.user.categories!],
                     ),
                   ],
                 ),
@@ -188,18 +195,20 @@ class _HistoryPageState extends State<HistoryPage> {
                             var confirmDelete = await showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return AlertMessage();
+                                return AlertMessage(
+                                  title: 'Confirm Delete',
+                                  content:
+                                      'Are you sure you want to delete this transaction?',
+                                );
                               },
                             );
-                            confirmDelete.then((shouldDelete) {
-                              if (shouldDelete == true) {
-                                firebase.deleteTransaction(
-                                  state.user,
-                                  state.user.transactions![index].id,
-                                );
-                                setState(() {});
-                              }
-                            });
+                            if (confirmDelete == true) {
+                              firebase.deleteTransaction(
+                                state.user,
+                                state.user.transactions![index].id,
+                              );
+                              setState(() {});
+                            }
                           },
                           transaction: state.user.transactions![index],
                         ),

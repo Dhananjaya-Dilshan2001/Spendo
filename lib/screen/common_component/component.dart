@@ -38,11 +38,16 @@ class MyWidget2 extends StatefulWidget {
   final String title;
   final Color color;
   final double amountFontSize;
+  final bool switchValue;
+  final VoidCallback? onChanged;
+
   const MyWidget2({
     super.key,
     required this.title,
     required this.color,
     required this.amountFontSize,
+    required this.switchValue,
+    this.onChanged,
   });
 
   @override
@@ -50,7 +55,6 @@ class MyWidget2 extends StatefulWidget {
 }
 
 class _MyWidget2State extends State<MyWidget2> {
-  bool switchValue = true;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -58,10 +62,10 @@ class _MyWidget2State extends State<MyWidget2> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Switch(
-          value: switchValue,
+          value: widget.switchValue,
           onChanged: (bool value) {
             setState(() {
-              switchValue = value;
+              widget.onChanged?.call();
             });
           },
           activeColor: widget.color,

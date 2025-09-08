@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +7,7 @@ import 'package:spendo/core/model/transaction.dart';
 import 'package:spendo/core/repository/firebase.dart';
 import 'package:spendo/screen/color&theme.dart';
 import 'package:spendo/screen/common_component/ListCard.dart';
+import 'package:spendo/screen/common_component/bar_graph.dart';
 import 'package:spendo/screen/common_component/buttons.dart';
 import 'package:spendo/screen/common_component/component.dart';
 import 'package:spendo/screen/common_component/popUpDialog.dart';
@@ -32,21 +34,11 @@ class _DashboardState extends State<Dashboard> {
     String dayName = DateFormat('EEEE').format(DateTime.now());
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
-        print("User State in Dashboard: $state");
         if (state is UserLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is UserError) {
           return Center(child: Text('Error: ${state.message}'));
         } else if (state is UserLoaded) {
-          double totalIncome = 0;
-          double totalExpense = 0;
-          for (var transaction in state.user.transactions!) {
-            if (transaction.isExpense) {
-              totalExpense += transaction.amount;
-            } else {
-              totalIncome += transaction.amount;
-            }
-          }
           return Stack(
             children: [
               Column(
@@ -90,12 +82,11 @@ class _DashboardState extends State<Dashboard> {
                           children: [
                             Container(
                               width: width * 0.4,
-                              //color: AppColors.color3,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Income : Rs ${totalIncome.toStringAsFixed(2)}/=',
+                                    'Income : Rs ${state.totalIncomeByDay(Timestamp.now()).toStringAsFixed(2)}/=',
                                     style: TextStyle(
                                       fontSize: width * 0.03,
                                       color: AppColors.color5,
@@ -103,7 +94,7 @@ class _DashboardState extends State<Dashboard> {
                                     ),
                                   ),
                                   Text(
-                                    'Outcome : Rs ${totalExpense.toStringAsFixed(2)}/=',
+                                    'Outcome : Rs ${state.totalExpenseByDay(Timestamp.now()).toStringAsFixed(2)}/=',
                                     style: TextStyle(
                                       fontSize: width * 0.03,
                                       fontWeight: FontWeight.bold,
@@ -116,10 +107,24 @@ class _DashboardState extends State<Dashboard> {
                             Container(
                               width: width * 0.4,
                               //color: AppColors.color5,
-                              child: const Icon(
-                                Icons.bar_chart,
-                                color: AppColors.color5,
-                                size: 32,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: MyBarGraph(
+                                  barColors: [
+                                    AppColors.color5,
+                                    AppColors.color3,
+                                    AppColors.color2,
+                                  ],
+                                  width: width * 0.4,
+                                  height: height * 0.05,
+                                  balance: state.user.monthlyBudget ?? 0.0,
+                                  totalIncome: state.totalIncomeByDay(
+                                    Timestamp.now(),
+                                  ),
+                                  totalExpense: state.totalExpenseByDay(
+                                    Timestamp.now(),
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -147,24 +152,16 @@ class _DashboardState extends State<Dashboard> {
                       child: ListView(
                         children: [
                           ...List.generate(
-                            state.user.transactions!.length,
+                            state
+                                .filterTransactionsByDate(Timestamp.now())
+                                .length,
                             (index) => ListCard1(
                               onLongPress: () async {
-                                var confirmDelete = await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertMessage();
-                                  },
+                                await deleteTransactionController(
+                                  context,
+                                  state,
+                                  index,
                                 );
-                                confirmDelete.then((shouldDelete) {
-                                  if (shouldDelete == true) {
-                                    firebase.deleteTransaction(
-                                      state.user,
-                                      state.user.transactions![index].id,
-                                    );
-                                    setState(() {});
-                                  }
-                                });
                               },
                               transaction: state.user.transactions![index],
                             ),
@@ -181,23 +178,7 @@ class _DashboardState extends State<Dashboard> {
                 child: Mybutton1(
                   label: "Add",
                   onPressed: () {
-                    var transaction = showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return popDialog(user: state.user);
-                      },
-                    );
-                    transaction.then((newTransaction) {
-                      if (newTransaction != null &&
-                          newTransaction is UserTransaction) {
-                        print("New Transaction: ${newTransaction.toJson()}");
-                        firebase.addTransaction(state.user, newTransaction);
-                        setState(() {});
-                      }
-                    });
-
-                    //addTransictionController(state);
-                    setState(() {});
+                    addTransactionController(context, state);
                   },
                 ),
               ),
@@ -207,5 +188,41 @@ class _DashboardState extends State<Dashboard> {
         return CircularProgressIndicator();
       },
     );
+  }
+
+  void addTransactionController(BuildContext context, UserLoaded state) {
+    var transaction = showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return popDialog(user: state.user);
+      },
+    );
+    transaction.then((newTransaction) {
+      if (newTransaction != null && newTransaction is UserTransaction) {
+        state.addTransaction(newTransaction);
+        setState(() {});
+      }
+    });
+    setState(() {});
+  }
+
+  Future<void> deleteTransactionController(
+    BuildContext context,
+    UserLoaded state,
+    int index,
+  ) async {
+    var confirmDelete = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertMessage(
+          title: 'Confirm Delete',
+          content: 'Are you sure you want to delete this transaction?',
+        );
+      },
+    );
+    if (confirmDelete == true) {
+      state.deleteTransaction(state.user.transactions![index].id);
+      setState(() {});
+    }
   }
 }

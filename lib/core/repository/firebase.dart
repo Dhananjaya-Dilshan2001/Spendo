@@ -52,5 +52,36 @@ class FirebaseRepository {
   Future<void> updateUser(AppUser user) async {
     var userId = user.id;
     await instance.collection('Users').doc(userId).update(user.toJson());
+    print("User with ID: $userId updated successfully.");
+  }
+
+  void addACategorie(String category, AppUser user) async {
+    user.categories!.add(category);
+    await updateUser(user);
+  }
+
+  void deleteACategorie(String category, AppUser user) async {
+    user.categories!.removeWhere((cat) => cat == category);
+    await updateUser(user);
+  }
+
+  void changeUserData(String variable, var newValue, AppUser user) async {
+    switch (variable) {
+      case "isEnable":
+        user.isEnable = newValue;
+        break;
+      case "monthlyBudget":
+        user.monthlyBudget = newValue;
+        break;
+      case "monthlyExpectedIncome":
+        user.monthlyExpectedIncome = newValue;
+        break;
+      case "monthlyExpectedOutcome":
+        user.monthlyExpectedOutcome = newValue;
+        break;
+      default:
+        print("Unknown variable: $variable");
+    }
+    await updateUser(user);
   }
 }
