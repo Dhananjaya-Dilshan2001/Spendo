@@ -55,4 +55,27 @@ lib/
 - Hands-on experience with **Firebase Authentication & Firestore**.  
 - Implemented **responsive UI** for mobile platforms.  
 - Practical understanding of **state management using BloC & Provider**.
+
+---
+
+## ⚙️ Installation & Usage  
+
+1. **Register** with an email and password (demo email).  
+2. **Log in** using the same credentials.  
+3. Enter your **name**.  
+4. On the first view, you will see blank pages with no data.  
+5. Go to the **Plan tab** and add values for:  
+   - Monthly budget (current balance you have)  
+   - Expected income  
+   - Expected outcome  
+6. Add **categories** before adding transactions.  
+7. Add transactions using the **“+” button** on the dashboard.  
+8. Delete a transaction by **long pressing** on a transaction card.  
+9. View **today’s transactions** on the dashboard.  
+10. To view past transactions, go to the **History tab** and filter by date.  
+    - Sorting by type and categories is **not implemented yet**.  
+11. Use the **Plan tab** to input the user’s expected monthly parameters.  
+12. In the **Overview tab**, compare your **expected vs. actual spending behavior** across categories.  
+13. Currently, the app only manages **one month at a time**. Viewing and managing multiple months is **not implemented yet**.  
  
+---
