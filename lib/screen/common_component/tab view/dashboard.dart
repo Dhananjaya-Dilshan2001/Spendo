@@ -12,7 +12,8 @@ import 'package:spendo/screen/common_component/component.dart';
 import 'package:spendo/screen/common_component/popUpDialog.dart';
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+  final String userId;
+  const Dashboard({super.key, required this.userId});
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -21,7 +22,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
-    context.read<UserBloc>().add(LoadUsers(userId: '1155555'));
+    context.read<UserBloc>().add(LoadUsers(userId: widget.userId));
     super.initState();
   }
 
@@ -45,7 +46,7 @@ class _DashboardState extends State<Dashboard> {
                   Text(
                     dayName,
                     style: TextStyle(
-                      fontSize: width * 0.06,
+                      fontSize: width * 0.07,
                       fontWeight: FontWeight.bold,
                       color: AppColors.color1,
                     ),
@@ -73,7 +74,7 @@ class _DashboardState extends State<Dashboard> {
                           title: "Remaining Balance",
                           amount: "Rs ${state.user.monthlyBudget}",
                           color: AppColors.color5,
-                          amountFontSize: width * 0.05,
+                          amountFontSize: width * 0.07,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,26 +84,26 @@ class _DashboardState extends State<Dashboard> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'Income : Rs ${state.totalIncomeByDay(Timestamp.now()).toStringAsFixed(2)}/=',
-                                    style: TextStyle(
-                                      fontSize: width * 0.03,
-                                      color: AppColors.color5,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  MyWidget1(
+                                    title: "Income",
+                                    amount:
+                                        "Rs ${state.totalIncomeByDay(Timestamp.now()).toStringAsFixed(2)}",
+                                    color: AppColors.color5,
+                                    amountFontSize: width * 0.04,
                                   ),
-                                  Text(
-                                    'Outcome : Rs ${state.totalExpenseByDay(Timestamp.now()).toStringAsFixed(2)}/=',
-                                    style: TextStyle(
-                                      fontSize: width * 0.03,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.color5,
-                                    ),
+                                  SizedBox(height: height * 0.01),
+                                  MyWidget1(
+                                    title: "Outcome",
+                                    amount:
+                                        "Rs ${state.totalExpenseByDay(Timestamp.now()).toStringAsFixed(2)}",
+                                    color: AppColors.color5,
+                                    amountFontSize: width * 0.04,
                                   ),
                                 ],
                               ),
                             ),
                             Container(
+                              height: height * 0.15,
                               width: width * 0.4,
                               //color: AppColors.color5,
                               child: Padding(
@@ -134,9 +135,9 @@ class _DashboardState extends State<Dashboard> {
                   Container(
                     width: width * 0.85,
                     child: Text(
-                      'Today : ${DateFormat('yyyy-MM-dd').format(DateTime.now())}',
+                      'Today : ${DateFormat('yyyy MMMM dd').format(DateTime.now())}',
                       style: TextStyle(
-                        fontSize: width * 0.03,
+                        fontSize: width * 0.04,
                         fontWeight: FontWeight.bold,
                         color: AppColors.color1,
                       ),

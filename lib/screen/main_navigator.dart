@@ -14,7 +14,7 @@ class _MainNavigatorState extends State<MainNavigator> {
   Widget build(BuildContext context) {
     return Navigator(
       onGenerateRoute:
-          (settings) => MaterialPageRoute(
+          (settings) => MaterialPageRoute<String>(
             builder: (context) {
               switch (settings.name) {
                 case '/':
@@ -22,7 +22,7 @@ class _MainNavigatorState extends State<MainNavigator> {
                 case '/logging':
                   return const LoggingPage();
                 case '/home':
-                  return const HomePage();
+                  return HomePage(userId: settings.arguments.toString());
                 default:
                   return const LoggingPage();
               }

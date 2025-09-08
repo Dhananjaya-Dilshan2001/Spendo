@@ -10,7 +10,8 @@ import 'package:spendo/screen/common_component/tab%20view/history_page.dart';
 import 'package:spendo/screen/common_component/tab%20view/plan_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String userId;
+  const HomePage({super.key, required this.userId});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -21,7 +22,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    context.read<UserBloc>().add(LoadUsers(userId: '1155555'));
+    context.read<UserBloc>().add(LoadUsers(userId: widget.userId));
     super.initState();
   }
 
@@ -30,6 +31,7 @@ class _HomePageState extends State<HomePage> {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: AppColors.color6,
         appBar: AppBar(
           actions: [
@@ -55,9 +57,11 @@ class _HomePageState extends State<HomePage> {
                 builder: (context, state) {
                   if (state is UserLoaded) {
                     return Text(
-                      'Hello, ${state.user.name}!',
-                      style: const TextStyle(
-                        fontSize: 16,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      'Hello, ${state.user.name}..!',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
                         fontWeight: FontWeight.bold,
                         color: AppColors.color1,
                       ),
@@ -108,7 +112,12 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: TabBarView(
-          children: [Dashboard(), HistoryPage(), PlanPage(), AnalyticPage()],
+          children: [
+            Dashboard(userId: widget.userId),
+            HistoryPage(),
+            PlanPage(),
+            AnalyticPage(),
+          ],
         ),
       ),
     );

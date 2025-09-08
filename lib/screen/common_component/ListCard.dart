@@ -20,23 +20,30 @@ class _ListCard1State extends State<ListCard1> {
       onLongPress: () {
         widget.onLongPress?.call();
       },
-
+      tileColor:
+          widget.transaction.isExpense
+              ? AppColors.color3.withOpacity(0.1)
+              : AppColors.color2.withOpacity(0.1),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: AppColors.color5, width: 2),
+        side: BorderSide(color: AppColors.color6, width: 2),
       ),
       contentPadding: EdgeInsets.symmetric(
         horizontal: width * 0.05,
-        vertical: height * 0.005,
+        vertical: height * 0.00,
       ),
       leading: CircleAvatar(
+        radius: width * 0.06,
         backgroundColor: AppColors.color1,
         child: Icon(
+          size: width * 0.06,
           widget.transaction.isExpense ? Icons.call_made : Icons.call_received,
           color: Colors.white,
         ),
       ),
       title: Text(
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         widget.transaction.category,
         style: TextStyle(
           fontSize: width * 0.04,
@@ -46,7 +53,7 @@ class _ListCard1State extends State<ListCard1> {
       ),
       subtitle: Text(
         widget.transaction.description,
-        style: TextStyle(fontSize: width * 0.03, color: Colors.grey),
+        style: TextStyle(fontSize: width * 0.035, color: Colors.grey),
       ),
       trailing: Text(
         '${widget.transaction.isExpense ? '-' : '+'} Rs ${widget.transaction.amount}',

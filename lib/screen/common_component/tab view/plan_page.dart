@@ -135,7 +135,7 @@ class _PlanPageState extends State<PlanPage> {
                 ),
                 SizedBox(height: height * 0.02),
                 Wrap(
-                  spacing: width * 0.05,
+                  spacing: width * 0.02,
                   runSpacing: height * 0.02,
                   children: [
                     ...List.generate(

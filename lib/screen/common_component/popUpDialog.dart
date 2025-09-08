@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:spendo/core/model/transaction.dart';
 import 'package:spendo/core/model/user.dart';
+import 'package:spendo/screen/color&theme.dart';
 
 class popDialog extends StatelessWidget {
   final AppUser user;
@@ -110,16 +111,26 @@ class AlertMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: AppColors.color2,
+      titleTextStyle: TextStyle(
+        color: AppColors.color6,
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
       title: Text(title),
       content: Text(content),
+      contentTextStyle: TextStyle(color: AppColors.color6, fontSize: 16),
+
       actions: [
         TextButton(
+          style: TextButton.styleFrom(foregroundColor: AppColors.color6),
           onPressed: () {
             Navigator.of(context).pop(false);
           },
           child: Text('Cancel'),
         ),
         TextButton(
+          style: TextButton.styleFrom(foregroundColor: AppColors.color6),
           onPressed: () {
             Navigator.of(context).pop(true);
           },
@@ -145,15 +156,30 @@ class SimpleUserInput extends StatelessWidget {
   Widget build(BuildContext context) {
     String newCategory = '';
     return AlertDialog(
+      surfaceTintColor: AppColors.color1,
+      backgroundColor: AppColors.color6,
+      titleTextStyle: TextStyle(
+        color: AppColors.color1,
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+      buttonPadding: const EdgeInsets.all(8),
       title: Text(title),
       content: TextField(
         onChanged: (value) {
           newCategory = value;
         },
-        decoration: InputDecoration(hintText: hintText),
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: TextStyle(color: AppColors.color1),
+        ),
       ),
       actions: [
         TextButton(
+          style: TextButton.styleFrom(
+            foregroundColor: AppColors.color6,
+            backgroundColor: AppColors.color1,
+          ),
           onPressed: () {
             Navigator.of(context).pop(newCategory);
           },

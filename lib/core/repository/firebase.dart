@@ -7,6 +7,11 @@ import 'package:spendo/screen/color&theme.dart';
 class FirebaseRepository {
   static FirebaseFirestore instance = FirebaseFirestore.instance;
 
+  Future<bool> isUserExist(String userId) async {
+    var doc = await instance.collection('Users').doc(userId).get();
+    return doc.exists;
+  }
+
   Future<void> addUser(AppUser user) async {
     print(user.toJson());
     await instance.collection('Users').doc(user.id).set(user.toJson());

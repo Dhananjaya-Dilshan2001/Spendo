@@ -20,7 +20,7 @@ class CategoryCard extends StatelessWidget {
         onLongPress?.call();
       },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: width * 0.01),
+        //margin: EdgeInsets.symmetric(horizontal: width * 0.01),
         padding: EdgeInsets.symmetric(
           horizontal: width * 0.04,
           vertical: width * 0.02,
@@ -30,8 +30,14 @@ class CategoryCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             CircleAvatar(
+              child: Icon(
+                Icons.category,
+                color: Colors.white,
+                size: width * 0.035,
+              ),
               radius: width * 0.03,
               backgroundColor: AppColors.color1,
             ),

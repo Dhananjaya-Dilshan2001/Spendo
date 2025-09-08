@@ -36,6 +36,35 @@ class _HistoryPageState extends State<HistoryPage> {
               .where((tx) => tx.isExpense)
               .fold(0, (sum, tx) => sum + tx.amount);
           double balance = totalIncome - totalExpense;
+          var children = [
+            ...List.generate(
+              state.filterTransactionsByDate(selectedDate).length,
+              (index) => ListCard1(
+                onLongPress: () async {
+                  var confirmDelete = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertMessage(
+                        title: 'Confirm Delete',
+                        content:
+                            'Are you sure you want to delete this transaction?',
+                      );
+                    },
+                  );
+                  if (confirmDelete == true) {
+                    state.deleteTransaction(
+                      context,
+                      state.filterTransactionsByDate(selectedDate)[index].id,
+                    );
+
+                    setState(() {});
+                  }
+                },
+                transaction:
+                    state.filterTransactionsByDate(selectedDate)[index],
+              ),
+            ),
+          ]; // Generate ListCard1 widgets for each transaction
           return Container(
             child: Column(
               children: [
@@ -43,7 +72,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 Text(
                   'Total Transaction History',
                   style: TextStyle(
-                    fontSize: width * 0.03,
+                    fontSize: width * 0.04,
                     fontWeight: FontWeight.bold,
                     color: AppColors.color1,
                   ),
@@ -75,7 +104,7 @@ class _HistoryPageState extends State<HistoryPage> {
                         amount: "Rs $balance",
                         color:
                             balance > 0 ? AppColors.color3 : AppColors.color2,
-                        amountFontSize: width * 0.05,
+                        amountFontSize: width * 0.06,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -84,13 +113,13 @@ class _HistoryPageState extends State<HistoryPage> {
                             title: "Total Income",
                             amount: "Rs $totalIncome",
                             color: AppColors.color3,
-                            amountFontSize: width * 0.03,
+                            amountFontSize: width * 0.045,
                           ),
                           MyWidget1(
                             title: "Total Outcome",
                             amount: "Rs $totalExpense",
                             color: AppColors.color2,
-                            amountFontSize: width * 0.03,
+                            amountFontSize: width * 0.045,
                           ),
                         ],
                       ),
@@ -105,16 +134,16 @@ class _HistoryPageState extends State<HistoryPage> {
                       Text(
                         'Date : ${selectedDate.toDate().toLocal().toString().split(' ')[0]}',
                         style: TextStyle(
-                          fontSize: width * 0.03,
+                          fontSize: width * 0.04,
                           fontWeight: FontWeight.bold,
                           color: AppColors.color1,
                         ),
                       ),
-                      SizedBox(width: width * 0.02),
+                      SizedBox(width: width * 0.03),
                       IconButton(
                         padding: EdgeInsets.symmetric(
                           horizontal: width * 0.05,
-                          vertical: width * 0.005,
+                          vertical: width * 0.00,
                         ),
                         style: IconButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -159,34 +188,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   child: ListView(
                     shrinkWrap: true,
                     padding: EdgeInsets.all(width * 0.04),
-                    children: [
-                      ...List.generate(
-                        state.filterTransactionsByDate(selectedDate).length,
-                        (index) => ListCard1(
-                          onLongPress: () async {
-                            var confirmDelete = await showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertMessage(
-                                  title: 'Confirm Delete',
-                                  content:
-                                      'Are you sure you want to delete this transaction?',
-                                );
-                              },
-                            );
-                            if (confirmDelete == true) {
-                              state.deleteTransaction(
-                                context,
-                                state.user.transactions![index].id,
-                              );
-
-                              setState(() {});
-                            }
-                          },
-                          transaction: state.user.transactions![index],
-                        ),
-                      ),
-                    ],
+                    children: children,
                   ),
                 ),
               ],
