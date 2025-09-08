@@ -35,7 +35,6 @@ class MyBarGraph extends StatelessWidget {
       height: 200,
       child: BarChart(
         BarChartData(
-          //alignment: BarChartAlignment.spaceBetween,
           maxY: maxValue,
           minY: 0,
           barTouchData: BarTouchData(enabled: false),

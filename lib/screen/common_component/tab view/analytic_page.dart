@@ -1,9 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:spendo/core/bloc/bloc/user_bloc.dart';
 import 'package:spendo/screen/color&theme.dart';
-import 'package:spendo/screen/common_component/component.dart';
 import 'package:spendo/screen/common_component/graph_card.dart';
 
 class AnalyticPage extends StatelessWidget {
@@ -55,8 +55,13 @@ class AnalyticPage extends StatelessWidget {
                 ),
                 SizedBox(height: height * 0.01),
                 Center(
-                  child: MyDropdownButton(
-                    items: ['September', 'Income', 'Expense'],
+                  child: Text(
+                    '${DateFormat('MMMM').format(DateTime.now())} ',
+                    style: TextStyle(
+                      fontSize: width * 0.05,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.color1,
+                    ),
                   ),
                 ),
                 SizedBox(height: height * 0.01),
@@ -172,11 +177,11 @@ class AnalyticPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: height * 0.03),
-                GraphCard(title: 'All', graphType: 'pie'),
+                GraphCard(title: 'All'),
                 SizedBox(height: height * 0.03),
-                GraphCard(title: 'Income', graphType: 'pie'),
+                GraphCard(title: 'Income'),
                 SizedBox(height: height * 0.03),
-                GraphCard(title: 'Outcome', graphType: 'pie'),
+                GraphCard(title: 'Outcome'),
               ],
             ),
           );

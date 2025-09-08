@@ -53,12 +53,24 @@ final class UserLoaded extends UserState {
     return total;
   }
 
-  void deleteTransaction(String transactionId) {
-    firebase.deleteTransaction(user, transactionId);
+  void deleteTransaction(BuildContext context, String transactionId) {
+    firebase.deleteTransaction(context, user, transactionId);
   }
 
-  void addTransaction(UserTransaction transaction) {
-    firebase.addTransaction(user, transaction);
+  void addTransaction(BuildContext context, UserTransaction transaction) {
+    firebase.addTransaction(context, user, transaction);
+  }
+
+  void changeUserData(BuildContext context, String variableName, var value) {
+    firebase.changeUserData(context, variableName, value, user);
+  }
+
+  void deleteCategory(BuildContext context, String category) {
+    firebase.deleteACategorie(context, category, user);
+  }
+
+  void addCategory(BuildContext context, String category) {
+    firebase.addACategorie(context, category, user);
   }
 }
 

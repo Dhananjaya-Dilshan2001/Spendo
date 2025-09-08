@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spendo/core/bloc/bloc/user_bloc.dart';
-import 'package:spendo/core/model/transaction.dart';
-import 'package:spendo/core/repository/firebase.dart';
 import 'package:spendo/screen/color&theme.dart';
 import 'package:spendo/screen/common_component/ListCard.dart';
 import 'package:spendo/screen/common_component/component.dart';
@@ -18,31 +16,8 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   Timestamp selectedDate = Timestamp.now();
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    //context.read<UserBloc>().add(LoadUsers(userId: '1155555'));
-  }
-
-  List<UserTransaction> filterTransactionsByDate(
-    List<UserTransaction> transactions,
-    Timestamp date,
-  ) {
-    DateTime selected = date.toDate();
-    return transactions.where((transaction) {
-      DateTime transactionDate = transaction.date.toDate();
-      return transactionDate.year == selected.year &&
-          transactionDate.month == selected.month &&
-          transactionDate.day == selected.day;
-    }).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
-    FirebaseRepository firebase = FirebaseRepository();
-    List<UserTransaction> displayTransactions = [];
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return BlocBuilder<UserBloc, UserState>(
@@ -52,15 +27,12 @@ class _HistoryPageState extends State<HistoryPage> {
         } else if (state is UserError) {
           return Center(child: Text('Error: ${state.message}'));
         } else if (state is UserLoaded) {
-          displayTransactions = filterTransactionsByDate(
-            state.user.transactions!,
-            selectedDate,
-          );
-          displayTransactions.sort((a, b) => b.date.compareTo(a.date));
-          double totalIncome = displayTransactions
+          double totalIncome = state
+              .filterTransactionsByDate(selectedDate)
               .where((tx) => !tx.isExpense)
               .fold(0, (sum, tx) => sum + tx.amount);
-          double totalExpense = displayTransactions
+          double totalExpense = state
+              .filterTransactionsByDate(selectedDate)
               .where((tx) => tx.isExpense)
               .fold(0, (sum, tx) => sum + tx.amount);
           double balance = totalIncome - totalExpense;
@@ -79,7 +51,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 Container(
                   margin: EdgeInsets.all(width * 0.04),
                   padding: EdgeInsets.symmetric(
-                    vertical: width * 0.04,
+                    vertical: width * 0.08,
                     horizontal: width * 0.08,
                   ),
                   width: width * 0.9,
@@ -101,7 +73,8 @@ class _HistoryPageState extends State<HistoryPage> {
                       MyWidget1(
                         title: "Budget",
                         amount: "Rs $balance",
-                        color: AppColors.color1,
+                        color:
+                            balance > 0 ? AppColors.color3 : AppColors.color2,
                         amountFontSize: width * 0.05,
                       ),
                       Row(
@@ -183,13 +156,12 @@ class _HistoryPageState extends State<HistoryPage> {
                   ],
                 ),
                 Container(
-                  height: height * 0.45,
                   child: ListView(
                     shrinkWrap: true,
                     padding: EdgeInsets.all(width * 0.04),
                     children: [
                       ...List.generate(
-                        displayTransactions.length,
+                        state.filterTransactionsByDate(selectedDate).length,
                         (index) => ListCard1(
                           onLongPress: () async {
                             var confirmDelete = await showDialog(
@@ -203,10 +175,11 @@ class _HistoryPageState extends State<HistoryPage> {
                               },
                             );
                             if (confirmDelete == true) {
-                              firebase.deleteTransaction(
-                                state.user,
+                              state.deleteTransaction(
+                                context,
                                 state.user.transactions![index].id,
                               );
+
                               setState(() {});
                             }
                           },

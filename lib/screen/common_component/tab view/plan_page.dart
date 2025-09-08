@@ -127,23 +127,8 @@ class _PlanPageState extends State<PlanPage> {
                     ),
                     Mybutton1(
                       label: 'Add New',
-                      onPressed: () {
-                        var categorie = showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            String newCategory = '';
-                            return SimpleUserInput(
-                              title: 'Add New Category',
-                              hintText: 'Enter category name',
-                              variableName: newCategory,
-                            );
-                          },
-                        );
-                        categorie.then((value) {
-                          if (value != null && value.isNotEmpty) {
-                            firebase.addACategorie(value, state.user);
-                          }
-                        });
+                      onPressed: () async {
+                        await addCategorieController(context, state);
                       },
                     ),
                   ],
@@ -158,24 +143,12 @@ class _PlanPageState extends State<PlanPage> {
                       (index) => CategoryCard(
                         color: AppColors.color4,
                         categoryName: state.user.categories![index],
-                        onLongPress: () {
-                          var confirmDelete = showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertMessage(
-                                title: 'Confirm Delete',
-                                content:
-                                    'Are you sure you want to delete this category?',
-                              );
-                            },
+                        onLongPress: () async {
+                          await deleteCategorieController(
+                            context,
+                            state,
+                            index,
                           );
-                          if (confirmDelete == true) {
-                            firebase.deleteACategorie(
-                              state.user.categories![index],
-                              state.user,
-                            );
-                            setState(() {});
-                          }
                         },
                       ),
                     ),
@@ -191,6 +164,47 @@ class _PlanPageState extends State<PlanPage> {
     );
   }
 
+  Future<void> addCategorieController(
+    BuildContext context,
+    UserLoaded state,
+  ) async {
+    var categorie = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String newCategory = '';
+        return SimpleUserInput(
+          title: 'Add New Category',
+          hintText: 'Enter category name',
+          variableName: newCategory,
+        );
+      },
+    );
+    if (categorie != null && categorie.isNotEmpty) {
+      state.addCategory(context, categorie);
+    }
+    setState(() {});
+  }
+
+  Future<void> deleteCategorieController(
+    BuildContext context,
+    UserLoaded state,
+    int index,
+  ) async {
+    var confirmDelete = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertMessage(
+          title: 'Confirm Delete',
+          content: 'Are you sure you want to delete this category?',
+        );
+      },
+    );
+    if (confirmDelete == true) {
+      state.deleteCategory(context, state.user.categories![index]);
+      setState(() {});
+    }
+  }
+
   void chnageBudgetValueController(
     BuildContext context,
     FirebaseRepository firebase,
@@ -202,15 +216,15 @@ class _PlanPageState extends State<PlanPage> {
       builder: (BuildContext context) {
         String newBudget = '';
         return SimpleUserInput(
-          title: 'Update $variableName',
-          hintText: 'Enter new $variableName amount',
+          title: 'Update  $variableName',
+          hintText: 'Enter new  value',
           variableName: newBudget,
         );
       },
     );
     budget.then((value) {
       if (value != null && value.isNotEmpty) {
-        firebase.changeUserData(variableName, double.parse(value), state.user);
+        state.changeUserData(context, variableName, double.parse(value));
         setState(() {});
       }
     });

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:spendo/core/model/transaction.dart';
 import 'package:spendo/core/model/user.dart';
+import 'package:spendo/screen/color&theme.dart';
 
 class FirebaseRepository {
   static FirebaseFirestore instance = FirebaseFirestore.instance;
@@ -35,37 +37,63 @@ class FirebaseRepository {
         .toList();
   }
 
-  void addTransaction(AppUser user, UserTransaction transaction) async {
+  void addTransaction(
+    BuildContext context,
+    AppUser user,
+    UserTransaction transaction,
+  ) async {
     var userId = user.id;
     user.transactions!.add(transaction);
     print("Adding transaction for user ID: $userId");
-    await updateUser(user);
+    await updateUser(context, user, "Transaction added successfully.");
   }
 
-  void deleteTransaction(AppUser user, String transactionId) async {
+  void deleteTransaction(
+    BuildContext context,
+    AppUser user,
+    String transactionId,
+  ) async {
     user.transactions!.removeWhere(
       (transaction) => transaction.id == transactionId,
     );
-    await updateUser(user);
+    await updateUser(context, user, "Transaction deleted successfully.");
   }
 
-  Future<void> updateUser(AppUser user) async {
+  Future<void> updateUser(
+    BuildContext context,
+    AppUser user,
+    String msg,
+  ) async {
     var userId = user.id;
     await instance.collection('Users').doc(userId).update(user.toJson());
     print("User with ID: $userId updated successfully.");
+    showSimpleSnackbar(context, msg);
   }
 
-  void addACategorie(String category, AppUser user) async {
+  void addACategorie(
+    BuildContext context,
+    String category,
+    AppUser user,
+  ) async {
     user.categories!.add(category);
-    await updateUser(user);
+    await updateUser(context, user, "Category added successfully.");
   }
 
-  void deleteACategorie(String category, AppUser user) async {
+  void deleteACategorie(
+    BuildContext context,
+    String category,
+    AppUser user,
+  ) async {
     user.categories!.removeWhere((cat) => cat == category);
-    await updateUser(user);
+    await updateUser(context, user, "Category deleted successfully.");
   }
 
-  void changeUserData(String variable, var newValue, AppUser user) async {
+  void changeUserData(
+    BuildContext context,
+    String variable,
+    var newValue,
+    AppUser user,
+  ) async {
     switch (variable) {
       case "isEnable":
         user.isEnable = newValue;
@@ -82,6 +110,34 @@ class FirebaseRepository {
       default:
         print("Unknown variable: $variable");
     }
-    await updateUser(user);
+    await updateUser(context, user, "User data updated successfully.");
   }
+}
+
+void showSimpleSnackbar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: AppColors.color1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      content: Row(
+        children: [
+          Icon(Icons.check_circle, color: Colors.white, size: 28),
+          SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              message,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }

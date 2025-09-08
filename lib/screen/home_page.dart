@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spendo/core/bloc/bloc/user_bloc.dart';
@@ -31,6 +32,15 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         backgroundColor: AppColors.color6,
         appBar: AppBar(
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.exit_to_app, color: AppColors.color1),
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushReplacementNamed(context, '/logging');
+              },
+            ),
+          ],
           backgroundColor: AppColors.color6,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -92,8 +102,8 @@ class _HomePageState extends State<HomePage> {
             tabs: const [
               Tab(icon: Icon(Icons.dashboard), text: 'Dashboard'),
               Tab(icon: Icon(Icons.list), text: 'History'),
-              Tab(icon: Icon(Icons.pie_chart), text: 'Stats'),
-              Tab(icon: Icon(Icons.settings), text: 'Settings'),
+              Tab(icon: Icon(Icons.settings), text: 'Plan'),
+              Tab(icon: Icon(Icons.pie_chart), text: 'Overview'),
             ],
           ),
         ),

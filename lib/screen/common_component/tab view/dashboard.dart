@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:spendo/core/bloc/bloc/user_bloc.dart';
 import 'package:spendo/core/model/transaction.dart';
-import 'package:spendo/core/repository/firebase.dart';
 import 'package:spendo/screen/color&theme.dart';
 import 'package:spendo/screen/common_component/ListCard.dart';
 import 'package:spendo/screen/common_component/bar_graph.dart';
@@ -20,7 +19,6 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  FirebaseRepository firebase = FirebaseRepository();
   @override
   void initState() {
     context.read<UserBloc>().add(LoadUsers(userId: '1155555'));
@@ -199,7 +197,7 @@ class _DashboardState extends State<Dashboard> {
     );
     transaction.then((newTransaction) {
       if (newTransaction != null && newTransaction is UserTransaction) {
-        state.addTransaction(newTransaction);
+        state.addTransaction(context, newTransaction);
         setState(() {});
       }
     });
@@ -221,7 +219,7 @@ class _DashboardState extends State<Dashboard> {
       },
     );
     if (confirmDelete == true) {
-      state.deleteTransaction(state.user.transactions![index].id);
+      state.deleteTransaction(context, state.user.transactions![index].id);
       setState(() {});
     }
   }

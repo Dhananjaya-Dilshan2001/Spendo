@@ -4,8 +4,7 @@ import 'package:spendo/core/bloc/bloc/user_bloc.dart';
 
 class GraphCard extends StatelessWidget {
   final String title;
-  final String graphType;
-  const GraphCard({super.key, required this.title, required this.graphType});
+  const GraphCard({super.key, required this.title});
 
   List<String> generateCategoryList(UserLoaded state, String title) {
     List<String> categories = [];

@@ -15,7 +15,7 @@ class _LoggingPageState extends State<LoggingPage> {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         print('User is currently signed out!');
-        Navigator.pushReplacementNamed(context, '/logging');
+        //Navigator.pushReplacementNamed(context, '/logging');
       } else {
         print('User is signed in!');
         Navigator.pushReplacementNamed(context, '/home');
