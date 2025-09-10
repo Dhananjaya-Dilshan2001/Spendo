@@ -56,7 +56,6 @@ class _HomePageState extends State<HomePage> {
               BlocBuilder<UserBloc, UserState>(
                 builder: (context, state) {
                   if (state is UserLoaded) {
-                    print("Created Home Page");
                     return Text(
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

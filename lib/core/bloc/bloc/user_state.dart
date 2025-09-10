@@ -88,7 +88,10 @@ final class UserLoaded extends UserState {
     return total;
   }
 
-  void deleteTransaction(BuildContext context, String transactionId) {
+  Future<void> deleteTransaction(
+    BuildContext context,
+    String transactionId,
+  ) async {
     firebase.deleteTransaction(context, user, transactionId);
   }
 

@@ -16,7 +16,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UserEvent>((event, emit) async {
       if (event is LoadUsers) {
         emit(UserLoading());
-        //print("Loading user with ID: ${event.userId}");
         await firebaseRepository
             .getUserByID(event.userId)
             .then((value) {
@@ -30,7 +29,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             .catchError((error) {
               emit(UserError(message: error.toString()));
             });
-        //print("Loaded user: ${user?.name}");
       } else if (event is AddUser) {
         emit(UserLoading());
         AppUser newUser = AppUser(

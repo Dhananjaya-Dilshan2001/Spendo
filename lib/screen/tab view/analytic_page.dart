@@ -20,17 +20,10 @@ class AnalyticPage extends StatelessWidget {
         } else if (state is UserError) {
           return Center(child: Text('Error: ${state.message}'));
         } else if (state is UserLoaded) {
-          print("Created Analytic Page");
-          double totalIncome = 0;
-          double totalExpense = 0;
+          state.getAllTransactionList();
+          double totalIncome = state.totalIncome();
+          double totalExpense = state.totalExpense();
           double balance = 0;
-          for (var transaction in state.user.transactions!) {
-            if (transaction.isExpense) {
-              totalExpense += transaction.amount;
-            } else {
-              totalIncome += transaction.amount;
-            }
-          }
           balance = totalIncome - totalExpense;
           balance = balance.abs();
           double maxValue = [

@@ -37,6 +37,7 @@ class _HistoryPageState extends State<HistoryPage> {
             ...List.generate(
               state.displayedTransactionList.length,
               (index) => ListCard1(
+                state: state,
                 onLongPress: () async {
                   await transactionDeleteController(
                     context,

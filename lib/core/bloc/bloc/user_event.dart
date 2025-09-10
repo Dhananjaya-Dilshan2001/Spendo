@@ -2,6 +2,7 @@ part of 'user_bloc.dart';
 
 abstract class UserEvent extends Equatable {}
 
+// ignore: must_be_immutable
 class LoadUsers extends UserEvent {
   String userId;
   LoadUsers({required this.userId});
@@ -10,6 +11,7 @@ class LoadUsers extends UserEvent {
   List<Object?> get props => [userId];
 }
 
+// ignore: must_be_immutable
 class AddUser extends UserEvent {
   String userId;
   String email;
@@ -20,16 +22,7 @@ class AddUser extends UserEvent {
   List<Object?> get props => [userId, email, name];
 }
 
-class UpdateUser extends UserEvent {
-  String userId;
-  String email;
-  String name;
-  UpdateUser({required this.userId, required this.email, required this.name});
-
-  @override
-  List<Object?> get props => [userId, email, name];
-}
-
+// ignore: must_be_immutable
 class DeleteUser extends UserEvent {
   String userId;
   DeleteUser({required this.userId});

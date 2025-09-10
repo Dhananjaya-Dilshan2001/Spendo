@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:spendo/core/bloc/bloc/user_bloc.dart';
 import 'package:spendo/core/model/transaction.dart';
 import 'package:spendo/screen/color&theme.dart';
 
 class ListCard1 extends StatefulWidget {
   final VoidCallback? onLongPress;
   final UserTransaction transaction;
-  const ListCard1({super.key, required this.transaction, this.onLongPress});
+  final UserLoaded state;
+  const ListCard1({
+    super.key,
+    required this.transaction,
+    this.onLongPress,
+    required this.state,
+  });
 
   @override
   State<ListCard1> createState() => _ListCard1State();
@@ -17,8 +24,10 @@ class _ListCard1State extends State<ListCard1> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return ListTile(
-      onLongPress: () {
-        widget.onLongPress?.call();
+      onLongPress: () async {
+        if (widget.onLongPress != null) {
+          widget.onLongPress!();
+        }
       },
       tileColor:
           widget.transaction.isExpense

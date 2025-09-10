@@ -31,9 +31,7 @@ class _DashboardState extends State<Dashboard> {
         } else if (state is UserError) {
           return Center(child: Text('Error: ${state.message}'));
         } else if (state is UserLoaded) {
-          print("Created Dashboard");
           state.setTodayTransactionList();
-          var displayedTransactions = state.displayedTransactionList;
           return Stack(
             children: [
               Column(
@@ -139,20 +137,21 @@ class _DashboardState extends State<Dashboard> {
                   Expanded(
                     child: Container(
                       width: width * 0.9,
-                      //color:AppColors.color2, // Set the background color of the container
                       child: ListView(
                         children: [
                           ...List.generate(
-                            displayedTransactions.length,
+                            state.displayedTransactionList.length,
                             (index) => ListCard1(
-                              onLongPress: () async {
-                                await deleteTransactionController(
+                              transaction:
+                                  state.displayedTransactionList[index],
+                              state: state,
+                              onLongPress: () {
+                                deleteTransactionController(
                                   context,
                                   state,
-                                  displayedTransactions[index].id,
+                                  state.displayedTransactionList[index].id,
                                 );
                               },
-                              transaction: displayedTransactions[index],
                             ),
                           ),
                         ],
