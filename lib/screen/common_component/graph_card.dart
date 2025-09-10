@@ -49,27 +49,9 @@ class GraphCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color mainColor = Color(0xFF5A54D6);
     final Color lightBg = Color(0xFFF1F5FB);
-    final Color incomeColor = Color(0xFF2EC4B6);
+    //final Color incomeColor = Color(0xFF2EC4B6);
     // Pie chart data
-    final List<_PieChartSection> sections = [
-      _PieChartSection(color: mainColor, value: 40, label: 'Monthly budget'),
-      _PieChartSection(
-        color: mainColor.withOpacity(0.7),
-        value: 25,
-        label: 'Monthly budget',
-      ),
-      _PieChartSection(
-        color: mainColor.withOpacity(0.5),
-        value: 15,
-        label: 'Monthly budget',
-      ),
-      _PieChartSection(color: incomeColor, value: 12, label: 'Monthly income'),
-      _PieChartSection(
-        color: incomeColor.withOpacity(0.7),
-        value: 8,
-        label: 'Monthly income',
-      ),
-    ];
+    final List<_PieChartSection> sections = [];
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
         if (state is UserLoading) {
@@ -84,7 +66,7 @@ class GraphCard extends StatelessWidget {
             sections.add(
               _PieChartSection(
                 color: colors[i],
-                value: 100.0 / categories.length,
+                value: state.getCategoryValueByName(categories[i]),
                 label: categories[i],
               ),
             );

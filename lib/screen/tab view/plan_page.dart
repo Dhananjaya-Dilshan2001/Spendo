@@ -29,6 +29,7 @@ class _PlanPageState extends State<PlanPage> {
         } else if (state is UserError) {
           return Center(child: Text('Error: ${state.message}'));
         } else if (state is UserLoaded) {
+          print("Created Plan Page");
           return Container(
             child: ListView(
               padding: EdgeInsets.symmetric(horizontal: height * 0.01),

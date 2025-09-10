@@ -11,7 +11,9 @@ final class UserInitial extends UserState {
 // ignore: must_be_immutable
 final class UserLoaded extends UserState {
   final AppUser user;
-  UserLoaded({required this.user});
+  List<UserTransaction> displayedTransactionList;
+  UserLoaded({required this.user})
+    : displayedTransactionList = user.transactions!;
   @override
   List<Object?> get props => [user];
 
@@ -27,12 +29,13 @@ final class UserLoaded extends UserState {
     }).toList();
   }
 
-  double totalIncomeByDay(Timestamp selectedDate) {
+  void setTransactionListByDate(Timestamp selectedDate) {
+    this.displayedTransactionList = filterTransactionsByDate(selectedDate);
+  }
+
+  double totalIncome() {
     double total = 0;
-    List<UserTransaction> dailyTransactions = filterTransactionsByDate(
-      selectedDate,
-    );
-    for (var transaction in dailyTransactions) {
+    for (var transaction in displayedTransactionList) {
       if (!transaction.isExpense) {
         total += transaction.amount;
       }
@@ -40,12 +43,44 @@ final class UserLoaded extends UserState {
     return total;
   }
 
-  double totalExpenseByDay(Timestamp selectedDate) {
+  void getAllTransactionList() {
+    this.displayedTransactionList = user.transactions!;
+  }
+
+  void displayTransactionListAccordingState(String state) {
+    if (state == "All") {
+      getAllTransactionList();
+    } else if (state == "Income") {
+      this.displayedTransactionList =
+          user.transactions!
+              .where((transaction) => !transaction.isExpense)
+              .toList();
+    } else if (state == "Expense") {
+      this.displayedTransactionList =
+          user.transactions!
+              .where((transaction) => transaction.isExpense)
+              .toList();
+    }
+  }
+
+  void setDisplayedTransactionByCategory(String category) {
+    if (category == "Category") {
+      getAllTransactionList();
+    } else {
+      this.displayedTransactionList =
+          user.transactions!
+              .where((transaction) => transaction.category == category)
+              .toList();
+    }
+  }
+
+  void setTodayTransactionList() {
+    this.displayedTransactionList = filterTransactionsByDate(Timestamp.now());
+  }
+
+  double totalExpense() {
     double total = 0;
-    List<UserTransaction> dailyTransactions = filterTransactionsByDate(
-      selectedDate,
-    );
-    for (var transaction in dailyTransactions) {
+    for (var transaction in displayedTransactionList) {
       if (transaction.isExpense) {
         total += transaction.amount;
       }
@@ -71,6 +106,20 @@ final class UserLoaded extends UserState {
 
   void addCategory(BuildContext context, String category) {
     firebase.addACategorie(context, category, user);
+  }
+
+  double getCategoryValueByName(String categoryName) {
+    double total = 0;
+    for (var transaction in user.transactions!) {
+      total += transaction.amount;
+    }
+    double categoryTotal = 0;
+    for (var transaction in user.transactions!) {
+      if (transaction.category == categoryName) {
+        categoryTotal += transaction.amount;
+      }
+    }
+    return categoryTotal / total * 100;
   }
 }
 

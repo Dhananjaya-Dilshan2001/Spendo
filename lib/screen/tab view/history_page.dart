@@ -16,6 +16,7 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   Timestamp selectedDate = Timestamp.now();
+  bool all = false;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -27,41 +28,23 @@ class _HistoryPageState extends State<HistoryPage> {
         } else if (state is UserError) {
           return Center(child: Text('Error: ${state.message}'));
         } else if (state is UserLoaded) {
-          double totalIncome = state
-              .filterTransactionsByDate(selectedDate)
-              .where((tx) => !tx.isExpense)
-              .fold(0, (sum, tx) => sum + tx.amount);
-          double totalExpense = state
-              .filterTransactionsByDate(selectedDate)
-              .where((tx) => tx.isExpense)
-              .fold(0, (sum, tx) => sum + tx.amount);
+          print("Created History Page");
+          double totalIncome = state.totalIncome();
+          double totalExpense = state.totalExpense();
           double balance = totalIncome - totalExpense;
+
           var children = [
             ...List.generate(
-              state.filterTransactionsByDate(selectedDate).length,
+              state.displayedTransactionList.length,
               (index) => ListCard1(
                 onLongPress: () async {
-                  var confirmDelete = await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertMessage(
-                        title: 'Confirm Delete',
-                        content:
-                            'Are you sure you want to delete this transaction?',
-                      );
-                    },
+                  await transactionDeleteController(
+                    context,
+                    state,
+                    state.displayedTransactionList[index].id,
                   );
-                  if (confirmDelete == true) {
-                    state.deleteTransaction(
-                      context,
-                      state.filterTransactionsByDate(selectedDate)[index].id,
-                    );
-
-                    setState(() {});
-                  }
                 },
-                transaction:
-                    state.filterTransactionsByDate(selectedDate)[index],
+                transaction: state.displayedTransactionList[index],
               ),
             ),
           ]; // Generate ListCard1 widgets for each transaction
@@ -131,14 +114,42 @@ class _HistoryPageState extends State<HistoryPage> {
                   width: width * 0.85,
                   child: Row(
                     children: [
-                      Text(
-                        'Date : ${selectedDate.toDate().toLocal().toString().split(' ')[0]}',
-                        style: TextStyle(
-                          fontSize: width * 0.04,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.color1,
+                      FilledButton(
+                        style: FilledButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          side: BorderSide(
+                            width: 1.5,
+                            color:
+                                all
+                                    ? AppColors.color1
+                                    : AppColors.color1.withOpacity(0.5),
+                          ),
+                          backgroundColor:
+                              all ? AppColors.color1 : Colors.transparent,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            all = !all;
+                            if (all) {
+                              state.displayedTransactionList =
+                                  state.user.transactions!;
+                            } else {
+                              state.setTransactionListByDate(selectedDate);
+                            }
+                          });
+                        },
+                        child: Text(
+                          'All',
+                          style: TextStyle(
+                            fontSize: width * 0.035,
+                            fontWeight: FontWeight.bold,
+                            color: all ? AppColors.color6 : AppColors.color1,
+                          ),
                         ),
                       ),
+
                       SizedBox(width: width * 0.03),
                       IconButton(
                         padding: EdgeInsets.symmetric(
@@ -152,6 +163,7 @@ class _HistoryPageState extends State<HistoryPage> {
                           backgroundColor: AppColors.color1,
                         ),
                         onPressed: () async {
+                          all = false;
                           await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
@@ -161,6 +173,7 @@ class _HistoryPageState extends State<HistoryPage> {
                             if (pickedDate != null) {
                               setState(() {
                                 selectedDate = Timestamp.fromDate(pickedDate);
+                                state.setTransactionListByDate(selectedDate);
                               });
                             }
                           });
@@ -171,6 +184,18 @@ class _HistoryPageState extends State<HistoryPage> {
                           color: AppColors.color6,
                         ),
                       ),
+                      SizedBox(width: width * 0.02),
+                      Visibility(
+                        visible: !all,
+                        child: Text(
+                          '${selectedDate.toDate().toLocal().toString().split(' ')[0]}',
+                          style: TextStyle(
+                            fontSize: width * 0.04,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.color1,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -178,13 +203,21 @@ class _HistoryPageState extends State<HistoryPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    MyDropdownButton(items: ['All', 'Income', 'Expense']),
                     MyDropdownButton(
+                      isCategory: false,
+                      items: ['All', 'Income', 'Expense'],
+                      onChanged: () {
+                        setState(() {});
+                      },
+                    ),
+                    MyDropdownButton(
+                      isCategory: true,
                       items: ["Category", ...state.user.categories!],
+                      onChanged: () => setState(() {}),
                     ),
                   ],
                 ),
-                Container(
+                Expanded(
                   child: ListView(
                     shrinkWrap: true,
                     padding: EdgeInsets.all(width * 0.04),
@@ -198,5 +231,26 @@ class _HistoryPageState extends State<HistoryPage> {
         return CircularProgressIndicator();
       },
     );
+  }
+
+  Future<void> transactionDeleteController(
+    BuildContext context,
+    UserLoaded state,
+    String id,
+  ) async {
+    var confirmDelete = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertMessage(
+          title: 'Confirm Delete',
+          content: 'Are you sure you want to delete this transaction?',
+        );
+      },
+    );
+    if (confirmDelete == true) {
+      state.deleteTransaction(context, id);
+
+      setState(() {});
+    }
   }
 }

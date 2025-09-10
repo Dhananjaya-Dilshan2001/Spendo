@@ -20,6 +20,7 @@ class AnalyticPage extends StatelessWidget {
         } else if (state is UserError) {
           return Center(child: Text('Error: ${state.message}'));
         } else if (state is UserLoaded) {
+          print("Created Analytic Page");
           double totalIncome = 0;
           double totalExpense = 0;
           double balance = 0;

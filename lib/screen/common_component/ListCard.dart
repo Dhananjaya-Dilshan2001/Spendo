@@ -22,8 +22,8 @@ class _ListCard1State extends State<ListCard1> {
       },
       tileColor:
           widget.transaction.isExpense
-              ? AppColors.color3.withOpacity(0.1)
-              : AppColors.color2.withOpacity(0.1),
+              ? AppColors.color2.withOpacity(0.1)
+              : AppColors.color3.withOpacity(0.1),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
         side: BorderSide(color: AppColors.color6, width: 2),

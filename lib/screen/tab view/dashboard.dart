@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -21,12 +20,6 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   @override
-  void initState() {
-    context.read<UserBloc>().add(LoadUsers(userId: widget.userId));
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
@@ -38,6 +31,9 @@ class _DashboardState extends State<Dashboard> {
         } else if (state is UserError) {
           return Center(child: Text('Error: ${state.message}'));
         } else if (state is UserLoaded) {
+          print("Created Dashboard");
+          state.setTodayTransactionList();
+          var displayedTransactions = state.displayedTransactionList;
           return Stack(
             children: [
               Column(
@@ -87,7 +83,7 @@ class _DashboardState extends State<Dashboard> {
                                   MyWidget1(
                                     title: "Income",
                                     amount:
-                                        "Rs ${state.totalIncomeByDay(Timestamp.now()).toStringAsFixed(2)}",
+                                        "Rs ${state.totalIncome().toStringAsFixed(2)}",
                                     color: AppColors.color5,
                                     amountFontSize: width * 0.04,
                                   ),
@@ -95,7 +91,7 @@ class _DashboardState extends State<Dashboard> {
                                   MyWidget1(
                                     title: "Outcome",
                                     amount:
-                                        "Rs ${state.totalExpenseByDay(Timestamp.now()).toStringAsFixed(2)}",
+                                        "Rs ${state.totalExpense().toStringAsFixed(2)}",
                                     color: AppColors.color5,
                                     amountFontSize: width * 0.04,
                                   ),
@@ -117,12 +113,8 @@ class _DashboardState extends State<Dashboard> {
                                   width: width * 0.4,
                                   height: height * 0.05,
                                   balance: state.user.monthlyBudget ?? 0.0,
-                                  totalIncome: state.totalIncomeByDay(
-                                    Timestamp.now(),
-                                  ),
-                                  totalExpense: state.totalExpenseByDay(
-                                    Timestamp.now(),
-                                  ),
+                                  totalIncome: state.totalIncome(),
+                                  totalExpense: state.totalExpense(),
                                 ),
                               ),
                             ),
@@ -151,18 +143,16 @@ class _DashboardState extends State<Dashboard> {
                       child: ListView(
                         children: [
                           ...List.generate(
-                            state
-                                .filterTransactionsByDate(Timestamp.now())
-                                .length,
+                            displayedTransactions.length,
                             (index) => ListCard1(
                               onLongPress: () async {
                                 await deleteTransactionController(
                                   context,
                                   state,
-                                  index,
+                                  displayedTransactions[index].id,
                                 );
                               },
-                              transaction: state.user.transactions![index],
+                              transaction: displayedTransactions[index],
                             ),
                           ),
                         ],
@@ -189,26 +179,24 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  void addTransactionController(BuildContext context, UserLoaded state) {
-    var transaction = showDialog(
+  void addTransactionController(BuildContext context, UserLoaded state) async {
+    var transaction = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return popDialog(user: state.user);
       },
     );
-    transaction.then((newTransaction) {
-      if (newTransaction != null && newTransaction is UserTransaction) {
-        state.addTransaction(context, newTransaction);
-        setState(() {});
-      }
-    });
+    if (transaction != null && transaction is UserTransaction) {
+      state.addTransaction(context, transaction);
+      setState(() {});
+    }
     setState(() {});
   }
 
   Future<void> deleteTransactionController(
     BuildContext context,
     UserLoaded state,
-    int index,
+    String id,
   ) async {
     var confirmDelete = await showDialog(
       context: context,
@@ -220,7 +208,7 @@ class _DashboardState extends State<Dashboard> {
       },
     );
     if (confirmDelete == true) {
-      state.deleteTransaction(context, state.user.transactions![index].id);
+      state.deleteTransaction(context, id);
       setState(() {});
     }
   }

@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spendo/core/bloc/bloc/user_bloc.dart';
 import 'package:spendo/core/repository/firebase.dart';
 import 'package:spendo/screen/color&theme.dart';
-import 'package:spendo/screen/common_component/tab%20view/analytic_page.dart';
-import 'package:spendo/screen/common_component/tab%20view/dashboard.dart';
-import 'package:spendo/screen/common_component/tab%20view/history_page.dart';
-import 'package:spendo/screen/common_component/tab%20view/plan_page.dart';
+import 'package:spendo/screen/tab%20view/analytic_page.dart';
+import 'package:spendo/screen/tab%20view/dashboard.dart';
+import 'package:spendo/screen/tab%20view/history_page.dart';
+import 'package:spendo/screen/tab%20view/plan_page.dart';
 
 class HomePage extends StatefulWidget {
   final String userId;
@@ -56,6 +56,7 @@ class _HomePageState extends State<HomePage> {
               BlocBuilder<UserBloc, UserState>(
                 builder: (context, state) {
                   if (state is UserLoaded) {
+                    print("Created Home Page");
                     return Text(
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
