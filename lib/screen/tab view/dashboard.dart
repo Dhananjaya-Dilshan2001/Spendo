@@ -66,7 +66,8 @@ class _DashboardState extends State<Dashboard> {
                       children: [
                         MyWidget1(
                           title: "Remaining Balance",
-                          amount: "Rs ${state.user.monthlyBudget}",
+                          amount:
+                              "Rs ${state.user.monthlyBudget! - state.totalExpense()}",
                           color: AppColors.color5,
                           amountFontSize: width * 0.07,
                         ),

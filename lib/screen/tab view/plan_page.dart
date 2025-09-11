@@ -72,6 +72,11 @@ class _PlanPageState extends State<PlanPage> {
                     totalExpense: state.user.monthlyExpectedOutcome ?? 0.0,
                     width: width,
                     height: height,
+                    barColors: [
+                      AppColors.color1,
+                      AppColors.color3,
+                      AppColors.color2,
+                    ],
                   ),
                 ),
                 SizedBox(height: height * 0.02),
